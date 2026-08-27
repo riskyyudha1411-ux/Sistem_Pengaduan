@@ -5,7 +5,7 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 RUN apt-get update \
     && apt-get install -y --no-install-recommends git unzip libicu-dev libzip-dev libxml2-dev libpng-dev libjpeg62-turbo-dev libfreetype6-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install dom gd intl mbstring simplexml xml xmlreader xmlwriter zip \
+    && docker-php-ext-install -j"$(nproc)" gd intl mbstring zip \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -17,7 +17,7 @@ FROM php:8.3-apache
 RUN apt-get update \
     && apt-get install -y --no-install-recommends libicu-dev libzip-dev libxml2-dev libpng-dev libjpeg62-turbo-dev libfreetype6-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install dom gd intl mbstring mysqli simplexml xml xmlreader xmlwriter zip \
+    && docker-php-ext-install -j"$(nproc)" gd intl mbstring mysqli zip \
     && rm -rf /var/lib/apt/lists/* \
     && a2enmod rewrite
 
