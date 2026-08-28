@@ -26,6 +26,8 @@ COPY --from=dependencies /app/vendor ./vendor
 COPY . .
 
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+# Render sets PORT env var; default to 10000
+ENV PORT=10000
 
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
         /etc/apache2/sites-available/*.conf \
@@ -33,4 +35,9 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
         /etc/apache2/conf-available/*.conf \
     && chown -R www-data:www-data writable
 
-EXPOSE 80
+# Use a startup script that sets Apache port from $PORT
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+EXPOSE ${PORT}
+CMD ["docker-entrypoint.sh"]
