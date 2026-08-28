@@ -33,6 +33,7 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
         /etc/apache2/sites-available/*.conf \
         /etc/apache2/apache2.conf \
         /etc/apache2/conf-available/*.conf \
+    && mkdir -p writable/cache writable/logs writable/session writable/debugbar writable/uploads \
     && chown -R www-data:www-data writable
 
 # Use a startup script that sets Apache port from $PORT
